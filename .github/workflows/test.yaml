@@ -4,6 +4,8 @@ name: Unit Test
 env:
   GOVERSION: '1.19'
   DIRENV_FILE: '.envrc'
+  TEST_COVERAGE_THRESHOLD: 80.0
+
 
 on:  # yamllint disable-line rule:truthy
   pull_request:
@@ -63,7 +65,19 @@ jobs:
         uses: HatsuneMiku3939/direnv-action@v1
 
       - name: Test
-        run: make test
+        run: make test/coverage
+
+      - name: Quality Gate - Test coverage
+        run: |
+          echo "Check test coverage is above the threshold $TEST_COVERAGE_THRESHOLD %"
+          totalCoverage=$(go tool cover -func=coverage.txt | grep total | grep -Eo '[0-9]+\.[0-9]+')
+          echo "Test coverage : $totalCoverage %"
+          if (( $(echo "$totalCoverage $TEST_COVERAGE_THRESHOLD" | awk '{print ($1 >= $2)}') )); then
+            echo "OK"
+          else
+            echo "Failed: Test coverage is below threshold."
+            exit 1
+          fi
 
   lint:
     name: Lint
