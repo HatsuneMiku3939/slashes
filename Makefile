@@ -45,7 +45,7 @@ test: gen
 
 ## test/coverage: Run test and generate coverage report
 .PHONY: test/coverage
-test/coverage:
+test/coverage: gen
 	@go test  ./... -coverprofile=coverage.txt -covermode=atomic
 	@go tool cover -html=coverage.txt -o coverage.html
 
