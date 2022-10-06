@@ -1,5 +1,7 @@
 package invoker
 
+//go:generate mockery --all
+
 import (
 	"context"
 )

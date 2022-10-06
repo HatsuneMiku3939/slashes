@@ -48,6 +48,7 @@ test: gen
 test/coverage: gen
 	@go test  ./... -coverprofile=coverage.txt -covermode=atomic
 	@go tool cover -html=coverage.txt -o coverage.html
+	@go tool cover -func=coverage.txt
 
 ## gen: Run all code generator
 GEN_TARGETS=gen/mock
@@ -75,7 +76,7 @@ build:
 	@printf "BUILD... \033[0;32m [OK] \033[0m\n"
 
 .PHONY: lint-ci
-lint-ci: $(TOOLS_DIR)/golangci-lint
+lint-ci: $(TOOLS_DIR)/golangci-lint gen
 	@echo GO LINT
 	@$(TOOLS_DIR)/golangci-lint run -c .github/linters/.golangci.yaml
 	@printf "GO LINT... \033[0;32m [OK] \033[0m\n"
