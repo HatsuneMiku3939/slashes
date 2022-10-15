@@ -1,21 +1,20 @@
-<!--
-Your issue may already be reported!
-Please search on the [issue tracker](../) before creating one.
--->
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
 
-## Description
-<!--
-Thank you for suggesting an idea to make slashes better.
-Please fill in as much of the template below as you're able.
--->
+---
 
-## Related Problem
-<!--
-Is your feature request related to a problem? Please describe.
-Please describe the problem you are trying to solve.
--->
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-## Alternative Solutions
-<!--
-Please describe alternative solutions or features you have considered.
--->
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
+
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
+
+**Additional context**
+Add any other context or screenshots about the feature request here.
