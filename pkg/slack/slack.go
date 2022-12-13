@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/HatsuneMiku3939/slashes/pkg/invoker"
 
 	"github.com/labstack/echo/v4"
+	shellwords "github.com/mattn/go-shellwords"
 	"github.com/sirupsen/logrus"
 	"github.com/slack-go/slack"
 )
@@ -145,8 +145,11 @@ func (h *Handler) invoke(ctx context.Context, cmd slack.SlashCommand) (int, stri
 	defer cancel()
 
 	// Parse the command as a command line
-	// TODO, use a proper parser(handle quotes, etc...)
-	args := strings.Split(cmd.Text, " ")
+	args, err := shellwords.Parse(cmd.Text)
+	if err != nil {
+		h.logger.WithField("command", cmd.Text).WithError(err).Error("malformed argument")
+		return -1, "", fmt.Errorf("malformed argument: %s %w", cmd.Text, err)
+	}
 
 	// invoke the command
 	h.logger.WithField("command", h.Command).WithField("args", args).Info("Invoking command")
