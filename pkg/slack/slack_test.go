@@ -142,6 +142,34 @@ func (suite *HandlerTestSuite) TestHandlerFailCommon() {
 	assert.Contains(suite.T(), suite.monitor.body[1], "unexpected error")
 }
 
+func (suite *HandlerTestSuite) TestMalformedArguments() {
+	// create request
+	form := make(url.Values)
+	form.Add("token", "testToken")
+	form.Add("text", `hatsune "miku`)
+	form.Add("response_url", "https://dummy")
+
+	req := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", echo.MIMEApplicationForm)
+
+	e := echo.New()
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	// invoke handler
+	err := suite.handler.Handler()(c)
+	// wait for the command to finish
+	time.Sleep(100 * time.Millisecond)
+
+	// assert
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), http.StatusOK, rec.Code)
+	assert.Len(suite.T(), suite.monitor.body, 2)
+	assert.Contains(suite.T(), suite.monitor.body[0], "Invoke Command with 1s timeout")
+	assert.Contains(suite.T(), suite.monitor.body[1], "Exit code: -1")
+	assert.Contains(suite.T(), suite.monitor.body[1], "malformed argument")
+}
+
 func TestHandlerTestSuite(t *testing.T) {
 	suite.Run(t, new(HandlerTestSuite))
 }
