@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -174,8 +175,16 @@ func (h *Handler) postMessage(ctx context.Context, cmd slack.SlashCommand, text 
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	if _, err := h.HTTPClient.Do(req); err != nil {
+	res, err := h.HTTPClient.Do(req)
+	if err != nil {
 		return err
+	}
+	defer res.Body.Close()
+
+	// drain the body
+	if _, err = io.Copy(io.Discard, res.Body); err != nil {
+		// ignore the error
+		h.logger.WithError(err).Warn("Failed to drain the response body")
 	}
 
 	return nil
