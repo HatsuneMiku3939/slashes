@@ -41,7 +41,6 @@ linters:
     - gofmt
     - noctx
     - bodyclose
-    - deadcode
     - unused
     - exhaustive
     - rowserrcheck
