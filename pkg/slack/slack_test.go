@@ -170,6 +170,18 @@ func (suite *HandlerTestSuite) TestMalformedArguments() {
 	assert.Contains(suite.T(), suite.monitor.body[1], "malformed argument")
 }
 
+func (suite *HandlerTestSuite) TestParseShellwordsSuccess() {
+	args, err := parseShellwords(`"hatsune miku" test 1111`)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), []string{"hatsune miku", "test", "1111"}, args)
+}
+
+func (suite *HandlerTestSuite) TestParseShellwordsFail() {
+	args, err := parseShellwords(`"hatsune miku test 1111`)
+	assert.Error(suite.T(), err)
+	assert.Nil(suite.T(), args)
+}
+
 func TestHandlerTestSuite(t *testing.T) {
 	suite.Run(t, new(HandlerTestSuite))
 }
