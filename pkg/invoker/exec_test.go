@@ -38,9 +38,21 @@ func (suite *CmdInvokerTestSuite) TestInvokeFailure() {
 	assert.Equal(suite.T(), "", output)
 }
 
+// TestInvokeFailure tests the failure case of invoking a command that does not exist
+func (suite *CmdInvokerTestSuite) TestInvokeFailureCommandFail() {
+	ctx := context.Background()
+	invoker := NewCmdInvoker()
+	exitCode, output, err := invoker.Invoke(ctx, "cat /tmp/non-existent-file")
+
+	// assert
+	assert.Error(suite.T(), err)
+	assert.Equal(suite.T(), -1, exitCode)
+	assert.Equal(suite.T(), "", output)
+}
+
 // TestInvokeFailureTimeout tests the failure case of invoking a command that times out
 func (suite *CmdInvokerTestSuite) TestInvokeFailureTimeout() {
-	ctx, cancelFunc := context.WithTimeout(context.Background(), 10*time.Millisecond)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancelFunc()
 	invoker := NewCmdInvoker()
 	exitCode, output, err := invoker.Invoke(ctx, "bash", "-c", "echo hello world && sleep 1 && echo goodbye world")
