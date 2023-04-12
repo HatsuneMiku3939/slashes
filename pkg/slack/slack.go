@@ -146,7 +146,7 @@ func (h *Handler) invoke(ctx context.Context, cmd slack.SlashCommand) (int, stri
 	defer cancel()
 
 	// Parse the command as a command line
-	args, err := shellwords.Parse(cmd.Text)
+	args, err := parseShellwords(cmd.Text)
 	if err != nil {
 		h.logger.WithField("command", cmd.Text).WithError(err).Error("malformed argument")
 		return -1, "", fmt.Errorf("malformed argument: %s %w", cmd.Text, err)
@@ -188,4 +188,9 @@ func (h *Handler) postMessage(ctx context.Context, cmd slack.SlashCommand, text 
 	}
 
 	return nil
+}
+
+// parseShellwords is the function that parses the command line arguments as shellwords
+func parseShellwords(args string) ([]string, error) {
+	return shellwords.Parse(args)
 }
